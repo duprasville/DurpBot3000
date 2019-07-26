@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -42,38 +41,46 @@ import com.qualcomm.robotcore.util.Range;
  * The names of OpModes appear on the menu of the FTC Driver Station.
  * When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
  * It includes all the skeletal structure that all iterative OpModes contain.
  */
 
-@TeleOp(name="Basic: Iterative OpMode", group="Iterative Opmode")
-public class BasicOpMode_Iterative extends OpMode
-{
+@TeleOp(name = "it is BLORP not BLORT", group = "Iterative Opmode")
+public class BasicOpMode_Iterative extends OpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightBackDrive = null;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Hello world.");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "motor-left-back");
-        rightDrive = hardwareMap.get(DcMotor.class, "motor-right-back");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "motor-left-back");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "motor-right-back");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "motor-left-front");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "motor-right-front");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -94,7 +101,7 @@ public class BasicOpMode_Iterative extends OpMode
         runtime.reset();
     }
 
-    double stickExp(double raw, double exp) {
+    private double stickExp(double raw, double exp) {
         return Math.signum(raw) * Math.pow(Math.abs(raw), exp);
     }
 
@@ -113,9 +120,9 @@ public class BasicOpMode_Iterative extends OpMode
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = gamepad1.dpad_up ? 0.5 : -stickExp(gamepad1.left_stick_y, 5.0);
-        double turn  = stickExp(gamepad1.right_stick_x, 6.0);
-        leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        double turn = stickExp(gamepad1.right_stick_x, 6.0);
+        leftPower = Range.clip(drive + turn, -1.0, 1.0);
+        rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -123,14 +130,31 @@ public class BasicOpMode_Iterative extends OpMode
         // rightPower = -gamepad1.right_stick_y ;
 
         // Send calculated power to wheels
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
+        leftBackDrive.setPower(leftPower);
+        rightBackDrive.setPower(rightPower);
+        leftFrontDrive.setPower(leftPower);
+        rightFrontDrive.setPower(rightPower);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Controllers", "left (%.2f), right (%.2f)", leftPower, rightPower);
-        telemetry.addData("     Motors", "left (%.2f), right (%.2f)", leftDrive.getPower(), rightDrive.getPower());
-        telemetry.addData("   Encoders", "left (%d), right (%d)", leftDrive.getCurrentPosition(), rightDrive.getCurrentPosition());
+
+        telemetry.addData(
+                "Motors",
+                "leftBack (%.2f), rightBack (%.2f), leftFront (%.2f), rightFront (%.2f)",
+                leftBackDrive.getPower(),
+                rightBackDrive.getPower(),
+                leftFrontDrive.getPower(),
+                rightFrontDrive.getPower()
+        );
+
+        telemetry.addData(
+                "Encoders",
+                "leftBack (%d), rightBack (%d), leftFront (%d), rightFront (%d)",
+                leftBackDrive.getCurrentPosition(),
+                rightBackDrive.getCurrentPosition(),
+                leftFrontDrive.getCurrentPosition(),
+                rightFrontDrive.getCurrentPosition());
     }
 
     /*

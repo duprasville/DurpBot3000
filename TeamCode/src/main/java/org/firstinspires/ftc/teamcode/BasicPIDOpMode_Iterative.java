@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -47,6 +48,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Basic PID: Iterative OpMode", group="Iterative Opmode")
+@Disabled
 public class BasicPIDOpMode_Iterative extends OpMode
 {
     // Declare OpMode members.
@@ -95,7 +97,7 @@ public class BasicPIDOpMode_Iterative extends OpMode
         runtime.reset();
     }
 
-    double stickExp(double raw, double exp) {
+    private double stickExp(double raw, double exp) {
         return Math.signum(raw) * Math.pow(Math.abs(raw), exp);
     }
 
