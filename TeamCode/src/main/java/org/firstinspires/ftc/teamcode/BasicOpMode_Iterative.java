@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -54,6 +55,7 @@ public class BasicOpMode_Iterative extends OpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
+    DigitalChannel digitalTouch;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -65,6 +67,12 @@ public class BasicOpMode_Iterative extends OpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
+
+        // Sensors
+        digitalTouch = hardwareMap.get(DigitalChannel.class, "touch_sensor");
+        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
+
+        // Drive train
         leftBackDrive = hardwareMap.get(DcMotor.class, "motor-left-back");
         rightBackDrive = hardwareMap.get(DcMotor.class, "motor-right-back");
         leftFrontDrive = hardwareMap.get(DcMotor.class, "motor-left-front");
